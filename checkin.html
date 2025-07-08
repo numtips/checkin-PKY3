@@ -1,0 +1,53 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Check-in GPS</title>
+  <script>
+    function getLocation() {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(sendPosition, showError, {
+          enableHighAccuracy: true,
+          timeout: 10000,
+          maximumAge: 0
+        });
+      } else {
+        document.body.innerHTML = "❌ เบราว์เซอร์นี้ไม่รองรับการดึงพิกัด.";
+      }
+    }
+
+    function sendPosition(position) {
+      const lat = position.coords.latitude;
+      const lng = position.coords.longitude;
+
+      // ✅ เปลี่ยน URL Google Form ของคุณตรงนี้
+      const googleFormURL = "https://docs.google.com/forms/d/e/1FAIpQLSfYourFormID/viewform";
+
+      // ✅ เปลี่ยน entry.XXXXXX ให้เป็น ID ของฟิลด์ GPS ใน Google Form
+      const redirectURL = `${googleFormURL}?entry.1234567890=${lat},${lng}`;
+
+      window.location.href = redirectURL; // Redirect ไปฟอร์ม
+    }
+
+    function showError(error) {
+      switch(error.code) {
+        case error.PERMISSION_DENIED:
+          alert("❌ ผู้ใช้ไม่อนุญาตการเข้าถึงพิกัด");
+          break;
+        case error.POSITION_UNAVAILABLE:
+          alert("❌ ไม่พบข้อมูลพิกัด");
+          break;
+        case error.TIMEOUT:
+          alert("⏳ การดึงพิกัดหมดเวลา");
+          break;
+        default:
+          alert("❌ เกิดข้อผิดพลาดไม่ทราบสาเหตุ");
+      }
+    }
+  </script>
+</head>
+<body onload="getLocation()">
+  <h2>📍 กำลังดึงพิกัดของคุณ…</h2>
+</body>
+</html>
